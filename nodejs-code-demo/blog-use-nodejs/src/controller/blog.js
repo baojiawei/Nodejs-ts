@@ -6,10 +6,10 @@ const getList = (author, keyword) => {
     from blogs
     where 1=1
   `
-  if(author) {
+  if (author) {
     sql += `and author = '${author}'`
   }
-  if(keyword) {
+  if (keyword) {
     sql += `and title like '%${keyword}%'`
   }
 
@@ -41,14 +41,28 @@ const newBlog = (blogData = {}) => {
 }
 
 const updateBlog = (id, blogData = {}) => {
-  // id 就是要更新博客的id
-  // blogData 是一个博客对象，包含title content属性
-  return true
+  const { title, content } = blogData
+  const sql = `
+    update blogs
+    set title='${title}',content='${content}'
+    where id=${id}
+  `
+  return exec(sql).then(updateData => {
+    const { affectedRows, changedRows } = updateData
+    return affectedRows && changedRows
+  })
 }
 
-const delBlog = (id) => {
+const delBlog = (id, author) => {
   // id 就是要更新博客的id
-  return true
+  const sql = `
+    delete from blogs
+    where id=${id} and author='${author}'
+  `
+  return exec(sql).then(deleteData => {
+    const { affectedRows } = deleteData
+    return affectedRows
+  })
 }
 
 module.exports = {
