@@ -1,8 +1,9 @@
 const fs = require('fs')
+const path = require('path')
 
 function read(url) {
   return new Promise((resolve, reject) => {
-    fs.readFile(url, 'utf8', function(err, data) {
+    fs.readFile(path.resolve(__dirname, url), 'utf8', function(err, data) {
       if(err) {
         reject(err)
       } else {
@@ -13,7 +14,7 @@ function read(url) {
 }
 // 如果一个promise的then方法中的函数（成功和失败）返回的结果是一个promise的话，会自动将这个promise执行，并且采用他的状态
 // 如果成功会将成功的结果向外层的下一个then传递
-read('./name.txt').then(data => {
+read('name.txt').then(data => {
   return read(data)
 }, err => {
   console.log(err)
