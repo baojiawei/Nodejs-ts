@@ -2,7 +2,7 @@ const PENDING = 'PENDING' // 等待
 const RESOLVED = 'RESOLVED' // 成功
 const REJECTED = 'REJECTED' // 失败
 
-function resolvePromise(promise2, x, resolve, reject) {
+const resolvePromise = (promise2, x, resolve, reject) => {
 
 }
 
@@ -37,21 +37,45 @@ class Promise {
   then(onfulfilled, onrejected) {
     let promise2 = new Promise((resolve, reject) => {
       if (this.status === RESOLVED) {
-        let x = onfulfilled(this.value)
-        resolvePromise(promise2, x, resolve, reject)
+        setTimeout(() => {
+          try {
+            let x = onfulfilled(this.value)
+            resolvePromise(promise2, x, resolve, reject)
+          } catch (e) {
+            reject(e)
+          }
+        }, 0);
       }
       if (this.status === REJECTED) {
-        let x = onrejected(this.reason)
-        resolvePromise(promise2, x, resolve, reject)
+        setTimeout(() => {
+          try {
+            let x = onrejected(this.reason)
+            resolvePromise(promise2, x, resolve, reject)
+          } catch (e) {
+            reject(e)
+          }
+        }, 0);
       }
       if (this.status === PENDING) {
         this.onResolvedCallbacks.push(() => {
-          let x =  onfulfilled(this.value)
-          resolvePromise(promise2, x, resolve, reject)
+          setTimeout(() => {
+            try {
+              let x = onfulfilled(this.value)
+              resolvePromise(promise2, x, resolve, reject)
+            } catch (e) {
+              reject(e)
+            }
+          }, 0);
         })
         this.onRejectedCallbacks.push(() => {
-          let x =  onrejected(this.reason)
-          resolvePromise(promise2, x, resolve, reject)
+          setTimeout(() => {
+            try {
+              let x = onrejected(this.reason)
+              resolvePromise(promise2, x, resolve, reject)
+            } catch (e) {
+              reject(e)
+            }
+          }, 0);
         })
       }
     })
