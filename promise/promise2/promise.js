@@ -3,7 +3,40 @@ const RESOLVED = 'RESOLVED' // 成功
 const REJECTED = 'REJECTED' // 失败
 
 const resolvePromise = (promise2, x, resolve, reject) => {
-
+  if (promise2 === x) {
+    return reject(new TypeError('Chaining cycle detected for promise #<Promise>'))
+  }
+  if ((typeof x === 'object' && x !== null) || typeof x === 'function') {
+    let called;
+    try {
+      let then = x.then
+      if(typeof then === 'function') {
+        then.call(x, y => {
+          if(called) {
+            return
+          }
+          called = true
+          resolvePromise(promise2, y, resolve, reject)
+        }, r => {
+          if(called) {
+            return
+          }
+          called = true
+          reject(r)
+        })
+      } else {
+        resolve(x)
+      }
+    } catch (e) {
+      if(called) {
+        return
+      }
+      called = true
+      reject(e)
+    }
+  } else {
+    resolve(x)
+  }
 }
 
 class Promise {
@@ -35,6 +68,8 @@ class Promise {
     }
   }
   then(onfulfilled, onrejected) {
+    onfulfilled = typeof onfulfilled === 'function' ? onfulfilled: data => data
+    onrejected = typeof onrejected === 'function' ? onrejected: err => { throw err }
     let promise2 = new Promise((resolve, reject) => {
       if (this.status === RESOLVED) {
         setTimeout(() => {
@@ -79,5 +114,17 @@ class Promise {
         })
       }
     })
+    return promise2
   }
 }
+
+Promise.defer = Promise.deferred = function () {
+  let dfd = {}
+  dfd.promise = new Promise((resolve, reject) => {
+    dfd.resolve = resolve
+    dfd.reject = reject
+  })
+  return dfd
+}
+
+module.exports = Promise
