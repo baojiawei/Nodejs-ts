@@ -71,7 +71,6 @@ const serverHandle = (req, res) => {
     SESSION_DATA[userId] = {}
   }
   req.session = SESSION_DATA[userId]
-  console.log('reqsession:' + JSON.stringify(SESSION_DATA[userId]))   
 
   getPostData(req).then(postData => {
     req.body = postData

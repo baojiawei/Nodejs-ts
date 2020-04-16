@@ -15,7 +15,6 @@ const handleUserRouter = (req, res) => {
       if (data.username) {
         req.session.username = data.username
         req.session.realname = data.realname
-        console.log('req session is:' + JSON.stringify(req.session))
         return new SuccessModel()
       }
       return new ErrorModel('登陆失败')
