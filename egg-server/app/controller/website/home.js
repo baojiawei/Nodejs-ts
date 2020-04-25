@@ -5,7 +5,9 @@ const Controller = require('egg').Controller;
 class HomeController extends Controller {
   async index() {
     const { ctx } = this;
-    ctx.body = '前端api接口';
+    const result = await ctx.app.mysql.get('blog_content', {});
+    console.log(result);
+    ctx.body = result;
   }
 }
 
