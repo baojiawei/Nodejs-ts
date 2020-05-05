@@ -3,6 +3,9 @@ import path from 'path'
 import matter from 'gray-matter'
 import remark from 'remark'
 import html from 'remark-html'
+import headings from 'remark-autolink-headings'
+import slug from 'remark-slug'
+import highlight from 'remark-highlight.js'
 
 const postsDirectory = path.join(process.cwd(), 'posts')
 
@@ -55,6 +58,9 @@ export async function getPostData(id) {
   const matterResult = matter(fileContents)
 
   const processedContent = await remark()
+    .use(slug)
+    .use(headings)
+    .use(highlight)
     .use(html)
     .process(matterResult.content)
   const contentHtml = processedContent.toString()
