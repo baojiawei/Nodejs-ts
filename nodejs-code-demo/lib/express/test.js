@@ -1,4 +1,4 @@
-const express = require('express')
+const express = require('./like-express')
 
 // 本次 http 请求的实例
 const app = express()
@@ -59,22 +59,6 @@ app.get('/api/get-cookie', loginCheck, (req, res, next) => {
   })
 })
 
-app.post('/api/get-post-data', (req, res, next) => {
-  console.log('post /api/get-post-data')
-  res.json({
-    errno: 0,
-    data: req.body
-  })
-})
-
-app.use((req, res, next) => {
-  console.log('处理 404')
-  res.json({
-    errno: -1,
-    msg: '404 not found'
-  })
-})
-
-app.listen(3000, () => {
-  console.log('server is running on port 3000')
+app.listen(8000, () => {
+  console.log('server is running on port 8000')
 })

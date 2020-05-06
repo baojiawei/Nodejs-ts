@@ -45,14 +45,13 @@ class LikeExpress {
     if(url === '/favicon.ico'){
       return stack
     }
-
     // 获取routes
     let curRoutes = []
     curRoutes = curRoutes.concat(this.routes.all)
     curRoutes = curRoutes.concat(this.routes[method])
     curRoutes.forEach(routeInfo => {
       if(url.indexOf(routeInfo.path) === 0) {
-        stack.stack.concat(routeInfo.stack)
+        stack = stack.concat(routeInfo.stack)
       }
     })
     return stack
