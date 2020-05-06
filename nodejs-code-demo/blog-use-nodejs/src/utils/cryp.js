@@ -10,10 +10,11 @@ function md5(content) {
 }
 
 // 加密函数
-function getPassword(password) {
+function genPassword(password) {
   const str = `password= ${password}&key=${SECRET_KEY}`
   return md5(str)
 }
 
-const result = getPassword('123')
-console.log(`result is: ${result}`)
+module.exports = {
+  genPassword
+}
