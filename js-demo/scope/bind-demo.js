@@ -1,6 +1,6 @@
 // 手写bind函数
 Function.prototype._bind = function () {
-  if(typeof this !== 'function') {
+  if (typeof this !== 'function') {
     return
   }
   // 将参数拆解为数组
@@ -20,6 +20,6 @@ function push() {
   console.log(...arguments)
   Array.prototype.push.call(this, ...arguments)
 }
-let arr = [1,2,3]
+let arr = [1, 2, 3]
 const myPush = push.bind(arr, 4, 5)
 myPush()
