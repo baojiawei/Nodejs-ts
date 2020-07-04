@@ -1,8 +1,8 @@
 <template>
   <div class="cart-wrapper">
-    <GoodsList :goodsList="goodsList"></GoodsList>
-    <hr>
-    <CartList :goodsList="goodsList" :cartList="cartList"></CartList>
+    <GoodsList :goods-list="goodsList" />
+    <hr />
+    <CartList :goods-list="goodsList" :cart-list="cartList" />
   </div>
 </template>
 
@@ -52,9 +52,9 @@ export default {
   },
   methods: {
     addToCart(id) {
-      const good = this.cartList.find(item => item.id === id)
-      if(good) {
-        good.quantity ++
+      const good = this.cartList.find((item) => item.id === id)
+      if (good) {
+        good.quantity++
         return
       } else {
         this.cartList.push({
@@ -64,19 +64,17 @@ export default {
       }
     },
     delToCart(id) {
-       const good = this.cartList.find(item => item.id === id)
-       if(good == null) {
-         return
-       }
-       good.quantity --
-       if(good.quantity <= 0) {
-         this.cartList = this.cartList.filter(item => item.id !== id)
-       }
-     }
+      const good = this.cartList.find((item) => item.id === id)
+      if (good == null) {
+        return
+      }
+      good.quantity--
+      if (good.quantity <= 0) {
+        this.cartList = this.cartList.filter((item) => item.id !== id)
+      }
+    }
   }
 }
 </script>
 
-<style lang="stylus">
-
-</style>
+<style lang="stylus"></style>

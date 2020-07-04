@@ -48,6 +48,11 @@ class Promise {
     this.onResolvedCallbacks = [];
     this.onRejectedCallbacks = [];
     let resolve = (value) => {
+      // 如果value是一个promise，那我的库中也要实现一个递归解析
+      if(value instanceof Promise) {
+        // 递归解析
+        return value.then(resolve,reject)
+      }
       if (this.status === PENDING) { //防止resovle之后再调用reject
         this.value = value
         this.status = RESOLVED
@@ -115,6 +120,19 @@ class Promise {
       }
     })
     return promise2
+  }
+  catch(errCallback) {
+    this.then(null, errCallback)
+  }
+  static resolve(val) {
+    return new Promise((resolve, reject) => {
+      resolve(val)
+    })
+  }
+  static reject(reason) {
+    return new Promise((resolve, reject) => {
+      reject(reason)
+    })
   }
 }
 
