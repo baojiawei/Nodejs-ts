@@ -2,7 +2,7 @@
  * @Author: 鲍佳玮
  * @Date: 2022-01-28 16:35:36
  * @LastEditors: 鲍佳玮
- * @LastEditTime: 2022-01-28 21:50:47
+ * @LastEditTime: 2022-01-29 00:12:06
  * @Description: 入口页
 -->
 <!DOCTYPE html>
@@ -19,15 +19,16 @@
     <!-- <script src="/node_modules/@vue/reactivity/dist/reactivity.global.js"></script> -->
     <script>
       const { reactive, effect, ref, computed } = VueReactivity
-      //   const state = reactive({ name: 'zf', age: 11, address: '上海' })
-      const state = reactive([1, 2, 3])
+      const state = reactive({ name: 'zf', age: 11, address: '上海' })
+      //   const state = reactive([1, 2, 3])
       effect(() => {
         console.log('ok')
         app.innerHTML = state.name + '今年' + state.age + '岁了'
+        effect(() => {
+          state.age = 1
+        })
+        state.address = '杭州'
       })
-      setTimeout(() => {
-        state[0] = '杭州'
-      }, 1000)
     </script>
   </body>
 </html>
