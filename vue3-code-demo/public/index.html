@@ -1,0 +1,33 @@
+<!--
+ * @Author: 鲍佳玮
+ * @Date: 2022-01-28 16:35:36
+ * @LastEditors: 鲍佳玮
+ * @LastEditTime: 2022-01-28 21:50:47
+ * @Description: 入口页
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="/dist/vue.js"></script>
+    <!-- <script src="/node_modules/@vue/reactivity/dist/reactivity.global.js"></script> -->
+    <script>
+      const { reactive, effect, ref, computed } = VueReactivity
+      //   const state = reactive({ name: 'zf', age: 11, address: '上海' })
+      const state = reactive([1, 2, 3])
+      effect(() => {
+        console.log('ok')
+        app.innerHTML = state.name + '今年' + state.age + '岁了'
+      })
+      setTimeout(() => {
+        state[0] = '杭州'
+      }, 1000)
+    </script>
+  </body>
+</html>
