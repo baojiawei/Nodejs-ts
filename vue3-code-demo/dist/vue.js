@@ -15,9 +15,24 @@
 
   /*
    * @Author: 鲍佳玮
+   * @Date: 2022-01-28 21:05:13
+   * @LastEditors: 鲍佳玮
+   * @LastEditTime: 2022-01-28 21:47:30
+   * @Description: 工具
+   */
+  var isObject = function (val) { return typeof val === 'object' && val != null; };
+  var isSymbol = function (val) { return typeof val === 'symbol'; };
+  var isArray = function (val) { return Array.isArray; };
+  var isInteger = function (key) { return '' + parseInt(key, 10) === key; };
+  var hasOwnProperty = Object.prototype.hasOwnProperty;
+  var hasOwn = function (val, key) { return hasOwnProperty.call(val, key); };
+  var hasChanged = function (value, oldValue) { return value !== oldValue; };
+
+  /*
+   * @Author: 鲍佳玮
    * @Date: 2022-01-28 20:29:26
    * @LastEditors: 鲍佳玮
-   * @LastEditTime: 2022-01-29 00:17:13
+   * @LastEditTime: 2022-01-29 01:05:52
    * @Description: effect
    */
   function effect(fn, options) {
@@ -33,14 +48,17 @@
   var effectStack = []; // 建立一个effect栈，用于处理嵌套effect，但是effect被清空导致后面的属性无法被收集
   function createReactiveEffect(fn, options) {
       var effect = function () {
-          try {
-              activeEffect = effect;
-              effectStack.push(activeEffect);
-              return fn(); // 内部调用用户传入effect的方法
-          }
-          finally {
-              effectStack.pop();
-              activeEffect = effectStack[effectStack.length - 1];
+          if (!effectStack.includes(effect)) {
+              // 防止递归执行
+              try {
+                  activeEffect = effect;
+                  effectStack.push(activeEffect);
+                  return fn(); // 内部调用用户传入effect的方法
+              }
+              finally {
+                  effectStack.pop();
+                  activeEffect = effectStack[effectStack.length - 1];
+              }
           }
       };
       effect.id = uid++;
@@ -75,21 +93,39 @@
           activeEffect.deps.push(dep);
       }
   }
-
-  /*
-   * @Author: 鲍佳玮
-   * @Date: 2022-01-28 21:05:13
-   * @LastEditors: 鲍佳玮
-   * @LastEditTime: 2022-01-28 21:47:30
-   * @Description: 工具
-   */
-  var isObject = function (val) { return typeof val === 'object' && val != null; };
-  var isSymbol = function (val) { return typeof val === 'symbol'; };
-  var isArray = function (val) { return Array.isArray; };
-  var isInteger = function (key) { return '' + parseInt(key, 10) === key; };
-  var hasOwnProperty = Object.prototype.hasOwnProperty;
-  var hasOwn = function (val, key) { return hasOwnProperty.call(val, key); };
-  var hasChanged = function (value, oldValue) { return value !== oldValue; };
+  function trigger(target, type, key, value, oldValue) {
+      var depsMap = targetMap.get(target);
+      if (!depsMap) {
+          return;
+      }
+      var run = function (effects) {
+          if (effects)
+              effects.forEach(function (effect) { return effect(); });
+      };
+      if (key === 'length' && isArray()) {
+          depsMap.forEach(function (dep, key) {
+              if (key === 'length' || key >= value) {
+                  //如果改的长度小于原有数组的长度也应该执行effect
+                  run(dep);
+              }
+          });
+      }
+      else {
+          // 对象处理
+          if (key != void 0) {
+              run(depsMap.get(key));
+          }
+          switch (type) {
+              case 'add':
+                  if (isArray()) {
+                      if (isInteger(key)) {
+                          run(depsMap.get('length'));
+                      }
+                  }
+                  break;
+          }
+      }
+  }
 
   function createGetter() {
       return function get(target, key, receiver) {
@@ -112,10 +148,10 @@
           var hadKey = isArray() && isInteger(key) ? Number(key) < target.length : hasOwn(target, key);
           var result = Reflect.set(target, key, value, receiver);
           if (!hadKey) {
-              console.log('新增属性');
+              trigger(target, 'add', key, value);
           }
           else if (hasChanged(value, oldValue)) {
-              console.log('修改属性');
+              trigger(target, 'set', key, value);
           }
           return result;
       };

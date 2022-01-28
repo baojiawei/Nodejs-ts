@@ -1,8 +1,10 @@
+import { isArray, isInteger } from '../shared/index'
+
 /*
  * @Author: 鲍佳玮
  * @Date: 2022-01-28 20:29:26
  * @LastEditors: 鲍佳玮
- * @LastEditTime: 2022-01-29 00:17:13
+ * @LastEditTime: 2022-01-29 01:05:52
  * @Description: effect
  */
 export function effect(fn, options: any = {}) {
@@ -17,13 +19,16 @@ let uid = 0
 const effectStack = [] // 建立一个effect栈，用于处理嵌套effect，但是effect被清空导致后面的属性无法被收集
 function createReactiveEffect(fn, options) {
   const effect = function () {
-    try {
-      activeEffect = effect
-      effectStack.push(activeEffect)
-      return fn() // 内部调用用户传入effect的方法
-    } finally {
-      effectStack.pop()
-      activeEffect = effectStack[effectStack.length - 1]
+    if (!effectStack.includes(effect)) {
+      // 防止递归执行
+      try {
+        activeEffect = effect
+        effectStack.push(activeEffect)
+        return fn() // 内部调用用户传入effect的方法
+      } finally {
+        effectStack.pop()
+        activeEffect = effectStack[effectStack.length - 1]
+      }
     }
   }
   effect.id = uid++
@@ -56,5 +61,40 @@ export function track(target, key) {
   if (!dep.has(activeEffect)) {
     dep.add(activeEffect)
     activeEffect.deps.push(dep)
+  }
+}
+
+export function trigger(target, type, key, value?, oldValue?) {
+  const depsMap = targetMap.get(target)
+  if (!depsMap) {
+    return
+  }
+  const run = effects => {
+    if (effects) effects.forEach(effect => effect())
+  }
+  if (key === 'length' && isArray(target)) {
+    depsMap.forEach((dep, key) => {
+      if (key === 'length' || key >= value) {
+        //如果改的长度小于原有数组的长度也应该执行effect
+        run(dep)
+      }
+    })
+  } else {
+    // 对象处理
+    if (key != void 0) {
+      run(depsMap.get(key))
+    }
+    switch (type) {
+      case 'add':
+        if (isArray(target)) {
+          if (isInteger(key)) {
+            run(depsMap.get('length'))
+          }
+        }
+        break
+
+      default:
+        break
+    }
   }
 }

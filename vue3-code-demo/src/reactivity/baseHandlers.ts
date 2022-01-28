@@ -1,5 +1,5 @@
 import { hasChanged, hasOwn, isArray, isInteger, isObject, isSymbol } from '../shared/index'
-import { track } from './effect'
+import { track, trigger } from './effect'
 import { reactive } from './reactive'
 
 function createGetter() {
@@ -23,9 +23,9 @@ function createSetter() {
     const hadKey = isArray(target) && isInteger(key) ? Number(key) < target.length : hasOwn(target, key)
     const result = Reflect.set(target, key, value, receiver)
     if (!hadKey) {
-      console.log('新增属性')
+      trigger(target, 'add', key, value)
     } else if (hasChanged(value, oldValue)) {
-      console.log('修改属性')
+      trigger(target, 'set', key, value, oldValue)
     }
     return result
   }
