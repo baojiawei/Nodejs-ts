@@ -8,21 +8,39 @@ let timer
 //     console.log(input1.value)
 //     timer = null
 //   }, 500)
-// })  
+// })
 
 function debounce(fn, delay = 300) {
   let timer = null
   return function () {
-    if (timer) {
-      clearTimeout(timer)
-    }
+    clearTimeout(timer)
     timer = setTimeout(() => {
       fn.apply(this, arguments)
-      timer = null
     }, delay)
   }
 }
 
-input1.addEventListener('keyup', debounce(() => {
-  console.log(input1.value)
-}))
+input1.addEventListener(
+  'keyup',
+  debounce(() => {
+    console.log(input1.value)
+  })
+)
+
+function throttle(fn, delay = 3000) {
+  let flag = true
+  return function () {
+    if (!flag) return
+    flag = false
+    setTimeout(() => {
+      fn.apply(this, arguments)
+      flag = true
+    }, delay)
+  }
+}
+input1.addEventListener(
+  'keyup',
+  throttle(() => {
+    console.log(input1.value)
+  })
+)
