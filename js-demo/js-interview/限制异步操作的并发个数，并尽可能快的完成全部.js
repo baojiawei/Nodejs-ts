@@ -2,7 +2,7 @@
  * @Author: 鲍佳玮
  * @Date: 2022-02-14 17:23:36
  * @LastEditors: 鲍佳玮
- * @LastEditTime: 2022-02-14 21:55:53
+ * @LastEditTime: 2022-02-14 22:04:55
  * @Description: 使用Promise实现：限制异步操作的并发个数，并尽可能快的完成全部
  */
 var urls = [
@@ -32,9 +32,7 @@ function loadImg(url) {
 function loadAllImgs(limit, handler, urls) {
   let sequence = [].concat(urls)
   let promises = sequence.splice(0, limit).map((url, index) => {
-    return handler(url).then(() => {
-      return index
-    })
+    return handler(url).then(() => index)
   })
   return sequence
     .reduce((p, url) => {
@@ -43,12 +41,7 @@ function loadAllImgs(limit, handler, urls) {
           return Promise.race(promises)
         })
         .then(fastestIndex => {
-          promises[fastestIndex] = handler(url).then(() => {
-            return fastestIndex
-          })
-        })
-        .catch(err => {
-          console.error(err)
+          promises[fastestIndex] = handler(url).then(() => fastestIndex)
         })
     }, Promise.resolve())
     .then(() => {
