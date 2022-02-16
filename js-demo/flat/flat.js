@@ -2,7 +2,7 @@
  * @Author: 鲍佳玮
  * @Date: 2022-02-09 22:12:54
  * @LastEditors: 鲍佳玮
- * @LastEditTime: 2022-02-09 22:48:08
+ * @LastEditTime: 2022-02-16 16:29:07
  * @Description: 对象拍平
  */
 
@@ -31,18 +31,18 @@ const obj = {
 */
 function objectFlat(obj = '') {
   const res = {}
-  function flat(item, preKey = '') {
+  function flat(item, prevKey = '') {
     Object.entries(item).forEach(([key, value]) => {
-      let newKey = key
+      let newKey = ''
       if (Array.isArray(item)) {
-        newKey = preKey ? `${preKey}[${key}]` : key
+        newkey = prevKey ? `${prevKey}[${key}]` : key
       } else {
-        newKey = preKey ? `${preKey}.${key}` : key
+        newkey = prevKey ? `${prevKey}.${key}` : key
       }
-      if (value && typeof value === 'object') {
-        flat(value, newKey)
+      if (typeof value === 'object') {
+        flat(value, newkey)
       } else {
-        res[newKey] = value
+        res[newkey] = value
       }
     })
   }

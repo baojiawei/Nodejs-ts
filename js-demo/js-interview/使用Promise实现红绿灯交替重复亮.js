@@ -2,7 +2,7 @@
  * @Author: 鲍佳玮
  * @Date: 2022-02-16 13:51:05
  * @LastEditors: 鲍佳玮
- * @LastEditTime: 2022-02-16 13:59:37
+ * @LastEditTime: 2022-02-16 14:17:10
  * @Description: 使用Promise实现红绿灯交替重复亮
  */
 function red() {
