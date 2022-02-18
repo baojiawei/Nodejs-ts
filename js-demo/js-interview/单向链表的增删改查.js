@@ -2,7 +2,7 @@
  * @Author: 鲍佳玮
  * @Date: 2022-02-14 13:26:33
  * @LastEditors: 鲍佳玮
- * @LastEditTime: 2022-02-17 15:40:06
+ * @LastEditTime: 2022-02-18 11:53:01
  * @Description: 单向链表的增删改查
  */
 class Node {
@@ -64,6 +64,30 @@ class LinkedList {
   find(index) {
     return this._getNode(index)
   }
+  reverse() {
+    function _reverse(head) {
+      if (head == null || head.next == null) return head
+      let newHead = _reverse(head.next)
+      head.next.next = head
+      head.next = null
+      return newHead
+    }
+
+    return _reverse(this.head)
+  }
+  reverse1() {
+    let head = this.head
+    if (head == null || head.next == null) return head
+    let newHead = null
+    while (head) {
+      let n = head.next
+      head.next = newHead
+      newHead = head
+      head = n
+      console.log(newHead)
+    }
+    return newHead
+  }
 }
 
 let ll = new LinkedList()
@@ -71,7 +95,6 @@ ll.add(1)
 ll.add(2)
 ll.add(3)
 ll.add(4)
-console.log(ll.find(2))
 // ll.update(2, 100)
 // console.log(ll.remove(3))
-console.dir(ll, { depth: 100 })
+console.dir(ll.reverse1(), { depth: 100 })

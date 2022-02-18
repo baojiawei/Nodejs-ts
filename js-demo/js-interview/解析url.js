@@ -2,7 +2,7 @@
  * @Author: 鲍佳玮
  * @Date: 2022-02-16 16:35:32
  * @LastEditors: 鲍佳玮
- * @LastEditTime: 2022-02-17 10:18:48
+ * @LastEditTime: 2022-02-17 15:59:22
  * @Description: 解析url
  */
 /**
@@ -27,8 +27,7 @@ function parseUrl(url) {
   var result = {}
   var keys = ['href', 'protocol', 'host', 'hostname', 'port', 'pathname', 'search', 'hash']
   var i, len
-  var regexp = /(^[a-z]+):\/\/(([a-z.]+):(\d+)?)(\/[^?#]*)?\?([^#]*)?#(.*)?/
-
+  var regexp = /(^.*):\/\/((.*):(\d+)?)(\/.*)?\?(.*)?#(.*)?/
   var match = regexp.exec(url)
   console.info('match=', match)
 
