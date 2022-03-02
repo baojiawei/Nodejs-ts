@@ -2,7 +2,7 @@
  * @Author: 鲍佳玮
  * @Date: 2022-02-10 09:10:25
  * @LastEditors: 鲍佳玮
- * @LastEditTime: 2022-02-10 09:26:46
+ * @LastEditTime: 2022-03-02 09:48:44
  * @Description: 实现数字千分位逗号分隔
  */
 function thousands(num = 0) {
